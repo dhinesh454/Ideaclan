@@ -4,7 +4,6 @@ const Book = require("../../models/book");
 const User = require('../../models/user');
 const Action = require('../../models/action');
 const jwt = require('jsonwebtoken');
-const { Op } = require("sequelize");
 const sequelize=require('../../utilis/database');
 
 const createBook = {
@@ -198,33 +197,8 @@ const returnBook = {
     }
 }
 
-const searchBook = {
-    type:new GraphQLList(BookType),
-    args: {
-        keyword: { type: GraphQLNonNull(GraphQLString) }
-    },
-    resolve: async (parent, args, context, info) => {
-        try {
-          
-            const searchCriteria = {
-                [Op.or]: [
-                    sequelize.where(sequelize.fn('LOWER', sequelize.col('title')), 'LIKE', `%${args.keyword.toLowerCase()}%`),
-                    sequelize.where(sequelize.fn('LOWER', sequelize.col('author')), 'LIKE', `%${args.keyword.toLowerCase()}%`),
-                    sequelize.where(sequelize.fn('LOWER', sequelize.col('genre')), 'LIKE', `%${args.keyword.toLowerCase()}%`)
-                ],
-                isavailable: true
-            };
-
-            // Find books based on search criteria
-            const books = await Book.findAll({ where:searchCriteria});
-            return books ;
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
-};
 
 
 module.exports = {
-    createBook,borrowBook,buyBooks,returnBook,searchBook
+    createBook,borrowBook,buyBooks,returnBook
 };

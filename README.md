@@ -68,3 +68,113 @@ Mutations
 - bcrypt: A library for encrypting passwords securely.
 
 
+# Running This Project In Your Local Machine
+
+- Clone the project from git to your local machine by using the folowing comment.
+- > git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+
+- After cloning install the node modules using the command "npm install"
+- Start the server using the command "npm run"
+
+
+- URL
+    -localhost:3000/graphql
+
+
+- The above link will open up some space to check all the apis, to check the api's follow the following things
+
+# Register User
+
+
+mutation CreateUser {
+    createUser(
+        name: "YourName"
+        email: "YourEmail"
+        phonenumber: "YourPhonenumber"
+        password: "Your Password"
+        role: "user/admin"
+    ) {
+        id
+        name
+        email
+        phonenumber
+        password
+        role
+       
+    }
+}
+
+
+
+# signIn
+
+
+mutation LoginUser {
+    loginUser(email: "yourEmail", password: "yourpassword") {
+       
+        token
+        message
+    }
+}
+
+
+# Add Book
+
+
+mutation CreateBook {
+    createBook(title: "Title", author: "`Author", genre: "Genre") {
+        id
+        title
+        author
+        genre
+        isavailable
+        
+    }
+}    
+
+
+
+# Buy Book
+
+
+mutation {
+  buyBooks( id:"bookId" ) {
+    message
+  }
+}
+
+
+# Borrow Book
+
+
+mutation {
+  borrowBook(id:"bookId") {
+   message
+
+  }
+}
+
+
+# return Book
+
+
+mutation {
+  returnBook( id:"bookId") {
+    message
+  }
+}
+
+
+# search Book
+
+
+query SearchBook {
+    searchBook(keyword: "searchword") {
+        id
+        title
+        author
+        genre
+        isavailable
+    }
+}
+
