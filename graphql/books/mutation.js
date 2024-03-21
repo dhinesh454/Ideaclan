@@ -177,7 +177,7 @@ const returnBook = {
 
             if (pendingRequest.borrowrequest) {
                 // Update book ownership
-                await Action.update({ UserId: pendingRequest.requestId ,borrowrequest:false,requestId:null,userId:pendingRequest.borrowrequest}, { where: { id: pendingRequest.id }, transaction: t });
+                await Action.update({ userId: pendingRequest.requestId ,borrowrequest:false,requestId:null}, { where: { id: pendingRequest.id }, transaction: t });
             
                 await t.commit();
                 return ({ message: `Ownership of the book ${book.title} transferred successfully to the borrower.` });

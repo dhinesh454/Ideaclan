@@ -6,7 +6,7 @@ const UserType = new GraphQLObjectType({
     fields: ()=>({
         id:{type:GraphQLInt},
         name:{type:GraphQLString},
-        email:{type:GraphQLNonNull(GraphQLString)},
+        email:{type:GraphQLString},
         phonenumber:{type:GraphQLString},
         password:{type:GraphQLString},
         role:{type:GraphQLString},
