@@ -59,6 +59,11 @@ Mutations
 - addBook, lendBook, purchaseBooks, giveBackBook, huntForBook
 
 
+### Action
+Queries
+- fetchActions
+
+
 
 ## Tech Stack
 - Node.js
@@ -131,16 +136,17 @@ mutation LoginUser {
 }
 ```
 ## Logout
-```mutation {
-    logoutUser{
-        message
-    }
+```
+mutation{ LogoutUser {
+    logoutUser
+}
 }
 ```
 
 ## CreateNew Book
 
-``` mutation{
+```
+ mutation{
     createBook(title: "Title", author: "`Author", genre: "Genre") {
         id
         title
@@ -156,31 +162,25 @@ mutation LoginUser {
 ## Buy Book
 
 ```
-mutation {
-  buyBooks( id:"bookId" ) {
-    message
-  }
+mutation BuyBooks {
+    buyBooks(id: "bookId")
 }
+
 ```
 
 ## Borrow Book
 
 ```
-mutation {
-  borrowBook(id:"bookId") {
-   message
-
-  }
+mutation BorrowBook {
+    borrowBook(id: "bookId")
 }
 ```
 
 ## return Book
 
 ```
-mutation {
-  returnBook( id:"bookId") {
-    message
-  }
+mutation ReturnBook {
+    returnBook(id: null)
 }
 ```
 
