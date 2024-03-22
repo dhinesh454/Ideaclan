@@ -75,6 +75,15 @@ Mutations
 - Clone the project from git to your local machine by using the folowing comment
 
 - After cloning install the node modules using the command "npm install" and set up the .env files as well with necessary requirements
+
+### Environment Variable (.env)
+```
+SQL_DB_NAME
+SQL_DB_USER
+SQL_DB_PASSWORD
+SQL_DB_HOST
+JSW_WEB_TOKEN_SECRETKEY
+```
 - Start the server using the command "npm start"
 
 
