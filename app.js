@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const dotenv=require('dotenv');
 dotenv.config()
+const cors = require('cors');
+const bodyParser = require('body-parser')
 const {graphqlHTTP} = require('express-graphql')
 const {GraphQLObjectType, GraphQLSchema} = require('graphql')
 
@@ -34,7 +36,8 @@ const Mutation = new GraphQLObjectType({
 
 
 
-
+app.use(cors());
+app.use(bodyParser.json())
 //listen to the graphql
 app.use('/graphql',graphqlHTTP({
     graphiql:true,

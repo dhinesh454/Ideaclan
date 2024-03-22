@@ -59,6 +59,17 @@ const loginUser = {
     }
 }
 
+const logoutUser = {
+    type: GraphQLString,
+    resolve: async (parent, args, context, info) => {
+      // Clear the token from the context or session
+      context.token = null;
+      return "Logout successful";
+    }
+  };
+
+  
+
 module.exports = {
-    createUser,loginUser
+    createUser,loginUser,logoutUser
 }

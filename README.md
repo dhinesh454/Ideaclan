@@ -1,22 +1,24 @@
 
-# Books User Management
 
-### Project Description
+# User Library Management System
 
-This project is designed to manage user authentication and book management within a library system. It features functionalities such as user authentication using JSON Web Tokens (JWT), book CRUD operations, and additional features like purchasing or borrowing books from the library.
+### Project Overview
+
+This initiative aims to oversee user authentication and book administration within a library system. It incorporates functionalities like user validation through JSON Web Tokens (JWT), book operations encompassing creation, retrieval, updating, and deletion, alongside additional features such as book acquisition or lending from the library.
 
 
 
-## Features
+## Implementation Details
 
 ### 1.UserAuthentication:
+- User can register ,Login.Logout feature implemented .
+- Implements token-based authentication utilizing JSON Web Tokens (JWT) to ensure secure user access
 
-- Utilizes token-based authentication using JSON Web Tokens (JWT) for secure user access.
 
-### 2.BookManagement:
+### 2. Book Administration:
 
-- Allows admins to perform CRUD operations on books within the library.
-- Users can browse and search for available books.
+- Facilitates administrators to execute CRUD (Create, Read, Update, Delete) operations on books housed within the library.
+- Provides users with the capability to explore and search for available books.
 
 #### AditionalFeatures
 - Users can buy or borrow books from the library.
@@ -26,55 +28,54 @@ This project is designed to manage user authentication and book management withi
 
 
 ### 3.GraphQL API:
-Implementing GraphQL for efficient and flexible querying, including:
+Introducing GraphQL for streamlined and adaptable querying, incorporating:
 
-- Fetching data for users, books, and action tables.
-- Mutation operations for creating books, users, buying, and borrowing effectively
-
-
+- Fetching data relating to users, books, and action records.
+- Mutation operations for efficiently creating books, users, purchasing, and borrowing.
 
 
 
 
 
-## Query && Mutation Operation(GraphQL)
 
 
-### User
-Query
-- getUser
+## GraphQL Operations
+
+
+### Users
+Queries:
+- fetchUser
 
 Mutations
--  createUser,loginUser 
+-  addUser, signInUser , logoutUser
 
 
 ### Books
 
-Query
-- getBooks, getAllBooks
+Queries
+- getBooks, retrieveAllBooks
 
 Mutations
-- createBook,borrowBook,buyBooks,returnBook,searchBook
+- addBook, lendBook, purchaseBooks, giveBackBook, huntForBook
 
 
 
 ## Tech Stack
-- Node.js: A JavaScript runtime environment for server-side development.
-- Express.js: A web application framework for Node.js used for building APIs.
-- Sequelize ORM: An Object-Relational Mapping tool for Node.js, used for interacting with databases.
-- GraphQL: A query language for APIs that enables more efficient data fetching.
-- JSON Web Tokens (JWT): A standard for secure authentication mechanism.
-- express-graphql: Middleware for creating GraphQL servers with Express.js.
-- bcrypt: A library for encrypting passwords securely.
+- Node.js
+- Express.js
+- Sequelize ORM
+- GraphQL
+- JSON Web Tokens (JWT)
+- express-graphql
+- bcrypt
 
 
-# Running This Project In Your Local Machine
+# How to Running This project in your computer
 
-- Clone the project from git to your local machine by using the folowing comment.
-- > git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+- Clone the project from git to your local machine by using the folowing comment
 
-- After cloning install the node modules using the command "npm install"
-- Start the server using the command "npm run"
+- After cloning install the node modules using the command "npm install" and set up the .env files as well with necessary requirements
+- Start the server using the command "npm start"
 
 
 - URL
@@ -83,10 +84,13 @@ Mutations
 
 - The above link will open up some space to check all the apis, to check the api's follow the following things
 
-# Register User
 
+# GraphQL Operations
 
-mutation CreateUser {
+## Register User
+
+```
+mutation {
     createUser(
         name: "YourName"
         email: "YourEmail"
@@ -103,12 +107,12 @@ mutation CreateUser {
        
     }
 }
+```
 
 
+## signIn
 
-# signIn
-
-
+```
 mutation LoginUser {
     loginUser(email: "yourEmail", password: "yourpassword") {
        
@@ -116,12 +120,18 @@ mutation LoginUser {
         message
     }
 }
+```
+## Logout
+```mutation {
+    logoutUser{
+        message
+    }
+}
+```
 
+## CreateNew Book
 
-# Add Book
-
-
-mutation CreateBook {
+``` mutation{
     createBook(title: "Title", author: "`Author", genre: "Genre") {
         id
         title
@@ -130,51 +140,55 @@ mutation CreateBook {
         isavailable
         
     }
-}    
+}
+```
 
 
+## Buy Book
 
-# Buy Book
-
-
+```
 mutation {
   buyBooks( id:"bookId" ) {
     message
   }
 }
+```
 
+## Borrow Book
 
-# Borrow Book
-
-
+```
 mutation {
   borrowBook(id:"bookId") {
    message
 
   }
 }
+```
 
+## return Book
 
-# return Book
-
-
+```
 mutation {
   returnBook( id:"bookId") {
     message
   }
 }
+```
 
 
-# search Book
+## search Book
+
+```
+query {
+  searchBook(keyword:"searchword"){
+    id
+    title
+    author
+    genre
+    isavailable
+  }
+} 
+```
 
 
-query SearchBook {
-    searchBook(keyword: "searchword") {
-        id
-        title
-        author
-        genre
-        isavailable
-    }
-}
 

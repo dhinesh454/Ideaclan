@@ -44,7 +44,7 @@ const createBook = {
 
 
 const borrowBook = {
-    type:BookType,
+    type: GraphQLString,
     args:{
         id: { type: GraphQLNonNull(GraphQLInt) },
     },
@@ -52,7 +52,7 @@ const borrowBook = {
         try {
             const token = context.token;
             if (!token) {
-                return ({message:"Authorization token is required"})
+                return "Authorization token is required"
                 
             }
     
@@ -62,7 +62,7 @@ const borrowBook = {
 
             const book = await Book.findByPk(args.id);
             if(!book.isavailable){
-                return ({message:"Book already Sold!!.."}) 
+                return "Book already Sold!!.."
             }
             
             const bookAction = await Action.findOne({where:{bookId:args.id}});
@@ -71,21 +71,21 @@ const borrowBook = {
 
             if(bookAction){
                 if(bookAction.borrowrequest){
-                    return ({message:`There's already a pending borrowing request for this book.`})
+                    return `There's already a pending borrowing request for this book.`
                 }
 
                 if(bookAction.userId==userId){
-                    return ({message:`Alrerady Borrowed the Book ${book.title}`})
+                    return `Alrerady Borrowed the Book ${book.title}`
                 }
             
               
                 await Action.update({borrowrequest:true,requestId:userId},{where:{bookId:args.id}})
-                return { message: `Borrow request for the book ${book.title} has been sent successfully.` };
+                return `Borrow request for the book ${book.title} has been sent successfully.`
             }
 
             await Action.create({title:book.title,action:"borrow",bookId:args.id,userId});
 
-            return ({message:`successfully Borrowed the Book ${book.title}`})
+            return `successfully Borrowed the Book ${book.title}`
 
         } catch (error) {
             throw new Error(error)
@@ -95,7 +95,7 @@ const borrowBook = {
 
 
 const buyBooks = {
-    type:BookType,
+    type: GraphQLString,
     args:{
         id: { type: GraphQLNonNull(GraphQLInt) },
     },
@@ -104,7 +104,7 @@ const buyBooks = {
       try {
         const token = context.token;
         if (!token) {
-            return ({message:"Authorization token is required"})
+            return "Authorization token is required"
         }
 
         const decoded = jwt.verify(token, process.env.JSW_WEB_TOKEN_SECRETKEY);
@@ -112,7 +112,7 @@ const buyBooks = {
 
           const book = await Book.findByPk(args.id);
           if(!book.isavailable){
-            return ({message:`Already bought the Book ${book.title} Sold out!!..`})
+            return `Already bought the Book ${book.title} Sold out!!..`
           }
           
           const bookAction = await Action.findOne({where:{bookId:args.id},transaction:t});
@@ -121,7 +121,7 @@ const buyBooks = {
           if (bookAction && bookAction.action === 'borrow'){
 
             if(bookAction.userId!==userId){
-                return ({message:"Book already borrowed by another User!!.."})
+                return "Book already borrowed by another User!!.."
             }
              
           }
@@ -130,7 +130,7 @@ const buyBooks = {
         
           await Action.create({title:book.title,action:"bought",bookId:args.id,userId:userId},{transaction:t});
           await t.commit();
-          return ({message:`successfully bought the Book ${book.title}`})
+          return `successfully bought the Book ${book.title}`
 
       } catch (error) {
         await t.rollback()  ///abort the transcation 
@@ -145,7 +145,7 @@ const buyBooks = {
 
 
 const returnBook = {
-    type:BookType,
+    type: GraphQLString,
     args:{
         id: { type: GraphQLNonNull(GraphQLInt) },
     },
@@ -154,7 +154,7 @@ const returnBook = {
         try {
             const token = context.token;
             if (!token) {
-               return ({message:"Authorization token is required"})
+               return "Authorization token is required"
 
             }
     
@@ -163,14 +163,14 @@ const returnBook = {
             
             const book = await Book.findByPk(args.id);
             if(!book.isavailable){
-                return ({message:`Book already Sold!! cant Return`})
+                return `Book already Sold!! cant Return`
             }
 
                // Check if there's any pending borrowing request
             const pendingRequest = await Action.findOne({where:{bookId:args.id}});
 
             if(pendingRequest==null){
-               return ({message:'User Not borrow the book check again!!'})
+               return 'User Not borrow the book check again!!'
             }
             
 
@@ -179,14 +179,14 @@ const returnBook = {
                 await Action.update({ userId: pendingRequest.requestId ,borrowrequest:false,requestId:null}, { where: { id: pendingRequest.id }, transaction: t });
             
                 await t.commit();
-                return ({ message: `Ownership of the book ${book.title} transferred successfully to the borrower.` });
+                return `Ownership of the book ${book.title} transferred successfully to the borrower.` 
             }
 
               else{
                 await Action.destroy({where:{bookId:args.id,userId},transaction:t});
                 await t.commit();
 
-                return ({message:`successfully returned the Book ${book.title}`})
+                return `successfully returned the Book ${book.title}`
               }       
             
 

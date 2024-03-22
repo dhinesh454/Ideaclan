@@ -16,7 +16,7 @@ const getAllBooks = {
     }
 }
 
-const getBooks ={
+const getBook ={
     type:BookType,
     args:{
         id:{type:GraphQLInt},
@@ -61,4 +61,4 @@ const searchBook = {
 };
 
 
-module.exports={ getBooks, getAllBooks,searchBook}
+module.exports={ getBook, getAllBooks,searchBook}
