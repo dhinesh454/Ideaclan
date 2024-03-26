@@ -42,12 +42,12 @@ const loginUser = {
         const user = await User.findOne({where:{email}});
 
         if(!user){
-            return ({message:"User not found"})
+            throw new Error("User Not found Try Again!!...")
         }
 
         const validPassword = await bcrypt.compare(password,user.password);
         if(!validPassword){
-            return ({message:"Invalid Password..Please check again"})
+            throw new Error("Invalid Password..Please check again")
         }
 
         //generateToken 

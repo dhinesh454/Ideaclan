@@ -5,6 +5,8 @@ const User = require('../../models/user');
 const Action = require('../../models/action');
 const jwt = require('jsonwebtoken');
 const sequelize=require('../../utilis/database');
+const authenticate=require('../../services/userservices');
+
 
 const createBook = {
     type: BookType,
@@ -15,21 +17,14 @@ const createBook = {
     },
     resolve: async (parent, args, context, info) => {
         try{
-            const token = context.token;
-            console.log('------------------->',context.token)
-            if (!token) {
-                return ({message:"Authorization token is required"})
-            }
-    
-            const decoded = jwt.verify(token, process.env.JSW_WEB_TOKEN_SECRETKEY);
-            const userId = decoded.userId;
-    
+            
+            authenticate.authorizeToken(context);
+            const userId = context.userId;
         
-    
             // Check user role
             const user = await User.findByPk(userId);
             if (!user || user.role !== 'admin') {
-                return ({message:"Unauthorized. Admin role required."})
+                throw new Error("Unauthorized. Admin role required.");
             }
     
             const book = await Book.create(args);
@@ -50,15 +45,8 @@ const borrowBook = {
     },
     resolve:async(parent, args, context, info)=>{
         try {
-            const token = context.token;
-            if (!token) {
-                return "Authorization token is required"
-                
-            }
-    
-            const decoded = jwt.verify(token, process.env.JSW_WEB_TOKEN_SECRETKEY);
-            const userId = decoded.userId;
-
+            authenticate.authorizeToken(context);
+            const userId = context.userId;
 
             const book = await Book.findByPk(args.id);
             if(!book.isavailable){
@@ -66,17 +54,25 @@ const borrowBook = {
             }
             
             const bookAction = await Action.findOne({where:{bookId:args.id}});
-
-           
+       
 
             if(bookAction){
-                if(bookAction.borrowrequest){
-                    return `There's already a pending borrowing request for this book.`
-                }
 
                 if(bookAction.userId==userId){
-                    return `Alrerady Borrowed the Book ${book.title}`
+                    return `Already Borrowed the Book ${book.title}`
+                }  
+
+                if(bookAction.borrowrequest){
+                    if(bookAction.requestId==userId){
+                        return 'Borrow request already Send to the User.'
+                    }
+                    else {
+                        return `There's already a pending borrowing request for this book.`
+                    }
+                   
                 }
+
+                
             
               
                 await Action.update({borrowrequest:true,requestId:userId},{where:{bookId:args.id}})
@@ -102,13 +98,8 @@ const buyBooks = {
     resolve:async(parent, args, context, info) =>{
         const t = await sequelize.transaction();
       try {
-        const token = context.token;
-        if (!token) {
-            return "Authorization token is required"
-        }
-
-        const decoded = jwt.verify(token, process.env.JSW_WEB_TOKEN_SECRETKEY);
-        const userId = decoded.userId;
+        authenticate.authorizeToken(context);
+        const userId = context.userId;
 
           const book = await Book.findByPk(args.id);
           if(!book.isavailable){
@@ -127,7 +118,7 @@ const buyBooks = {
           }
 
           await Book.update({isavailable:false},{where:{id:args.id},transaction:t})
-        
+          await Action.destroy({where:{bookId:args.id,userId},transaction:t});
           await Action.create({title:book.title,action:"bought",bookId:args.id,userId:userId},{transaction:t});
           await t.commit();
           return `successfully bought the Book ${book.title}`
@@ -152,14 +143,8 @@ const returnBook = {
     resolve:async(parent, args, context, info)=>{
         const t = await sequelize.transaction();
         try {
-            const token = context.token;
-            if (!token) {
-               return "Authorization token is required"
-
-            }
-    
-            const decoded = jwt.verify(token, process.env.JSW_WEB_TOKEN_SECRETKEY);
-            const userId = decoded.userId;
+            authenticate.authorizeToken(context);
+            const userId = context.userId;
             
             const book = await Book.findByPk(args.id);
             if(!book.isavailable){
@@ -169,12 +154,19 @@ const returnBook = {
                // Check if there's any pending borrowing request
             const pendingRequest = await Action.findOne({where:{bookId:args.id}});
 
-            if(pendingRequest==null){
-               return 'User Not borrow the book check again!!'
+            if(!pendingRequest){
+               return 'User cant return the book check again!!..Borrow the book then return'
             }
+
+
             
 
             if (pendingRequest.borrowrequest) {
+
+                if(pendingRequest.userId!==userId){
+                    return 'Cant Return User not borrow the book'
+                }
+
                 // Update book ownership
                 await Action.update({ userId: pendingRequest.requestId ,borrowrequest:false,requestId:null}, { where: { id: pendingRequest.id }, transaction: t });
             

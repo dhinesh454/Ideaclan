@@ -180,7 +180,7 @@ mutation BorrowBook {
 
 ```
 mutation ReturnBook {
-    returnBook(id: null)
+    returnBook(id: "bookId")
 }
 ```
 
@@ -199,5 +199,62 @@ query {
 } 
 ```
 
+## Fetch All User
 
+```
+query GetAllUsers {
+    getAllUsers {
+        id
+        name
+        email
+        phonenumber
+        password
+        role
+       
+    }
+}
+```
+
+## Fetch All Books
+```
+query GetAllBooks {
+    getAllBooks {
+        id
+        title
+        author
+        genre
+        isavailable
+      
+    }
+}
+```
+
+
+## Fetch Book (Using bookId)
+```
+query GetBook {
+    getBook(id:"BookId") {
+        id
+        title
+        author
+        genre
+        isavailable
+    }
+}
+```
+
+
+## Fetch User (Using userId)
+```
+query GetUser {
+    getUser(id: "userId") {
+        id
+        name
+        email
+        phonenumber
+        password
+        role
+    }
+}
+```
 

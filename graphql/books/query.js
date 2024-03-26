@@ -3,6 +3,7 @@ const BookType = require("./typeDef");
 const Book = require('../../models/book');
 const { Op } = require("sequelize");
 const sequelize=require('../../utilis/database');
+const authenticate=require('../../services/userservices');
 
 const getAllBooks = {
     type: new GraphQLList(BookType),
@@ -41,6 +42,8 @@ const searchBook = {
     },
     resolve: async (parent, args, context, info) => {
         try {
+            authenticate.authorizeToken(context);
+            const userId = context.userId;
           
             const searchCriteria = {
                 [Op.or]: [
