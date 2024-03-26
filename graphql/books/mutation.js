@@ -158,14 +158,16 @@ const returnBook = {
                return 'User cant return the book check again!!..Borrow the book then return'
             }
 
+            
+            if(pendingRequest.userId!==userId){
+                return 'Cant Return User not borrow the book'
+            }
 
             
 
             if (pendingRequest.borrowrequest) {
 
-                if(pendingRequest.userId!==userId){
-                    return 'Cant Return User not borrow the book'
-                }
+                
 
                 // Update book ownership
                 await Action.update({ userId: pendingRequest.requestId ,borrowrequest:false,requestId:null}, { where: { id: pendingRequest.id }, transaction: t });
@@ -175,6 +177,9 @@ const returnBook = {
             }
 
               else{
+
+               
+
                 await Action.destroy({where:{bookId:args.id,userId},transaction:t});
                 await t.commit();
 

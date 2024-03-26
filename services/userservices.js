@@ -8,7 +8,7 @@ const generateToken = (id) =>{
 const authorizeToken = (context) => {
     const token = context.token;
     if (!token) {
-        throw new Error("Authorization token is required");
+        throw new Error("Authorization token is required!!.Please Login");
     }
 
     try {
